@@ -1,0 +1,1 @@
+aws cloudformation deploy --template-file ./packaged.yaml --stack-name vw-carnet-api --profile $1 --region eu-west-1 --capabilities CAPABILITY_IAM

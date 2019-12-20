@@ -1,0 +1,115 @@
+
+Transform: AWS::Serverless-2016-10-31
+Resources:
+
+  VWCarnetLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../
+      Runtime: nodejs12.x
+      Handler: index.handler
+      FunctionName: vw-carnet-api
+      MemorySize: 1024
+      Timeout: 30      
+      Events: 
+        ProxyApiRoot:
+          Type: Api
+          Properties:
+            RestApiId: !Ref VWCarnetAPI
+            Path: /
+            Method: ANY
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            RestApiId: !Ref VWCarnetAPI
+            Path: /{proxy+}
+            Method: ANY
+
+  VWCarnetAPI: 
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: v1
+      Cors:
+        AllowMethods: "'OPTIONS,POST,GET'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Accept'"
+        # AllowCredentials: true
+        # AllowOrigin: '*'
+      Auth:
+        ApiKeyRequired: true
+      DefinitionBody:
+        swagger: "2.0"
+        basePath: !Sub /prod
+        schemes:
+          - https
+        info:
+          title: VW Carnet API
+        paths:
+          /:
+            x-amazon-apigateway-any-method:
+              responses: {}
+              produces:
+              - application/json
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub:
+                    - arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/${FunctionArn}/invocations
+                    - { FunctionArn: !GetAtt VWCarnetLambda.Arn }
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              responses: {}
+              produces:
+              - application/json
+              parameters:
+              - name: proxy
+                in: path
+                required: true
+                type: string
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub:
+                    - arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/${FunctionArn}/invocations
+                    - { FunctionArn: !GetAtt VWCarnetLambda.Arn }                    
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref VWCarnetAPI
+      Description: API deployment
+      # StageName: v1
+
+  Stage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: prod
+      Description: Prod Stage
+      RestApiId: !Ref VWCarnetAPI
+      DeploymentId: !Ref Deployment
+
+  ApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn:
+      - Deployment
+      - VWCarnetAPI
+      - Stage
+    Properties:
+      Name: "vw-carnet-api-key"
+      Description: API key for vw carnet
+      Enabled: true
+      StageKeys:
+        - RestApiId: !Ref VWCarnetAPI
+          StageName: prod
+
+  UsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      ApiStages:
+        - ApiId: !Ref VWCarnetAPI
+          Stage: !Ref Stage
+      Description: VW Carnet Usage plan
+      Throttle:
+        BurstLimit: 200
+        RateLimit: 100
+      UsagePlanName: vw-carnet-usage-plan          

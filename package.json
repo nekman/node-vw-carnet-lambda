@@ -1,0 +1,33 @@
+{
+  "name": "node-vw-carnet-lambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "local": "node local",
+    "eslint": "eslint -c .eslintrc src/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "2.586.0",
+    "chrome-aws-lambda": "2.0.1",
+    "esm": "3.2.25",
+    "lambda-api": "0.10.4",
+    "node-vw-carnet": "0.0.3",
+    "puppeteer-core": "2.0.0",
+    "uuid": "3.3.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.37",
+    "@types/node": "12.12.14",
+    "@types/node-fetch": "2.5.4",
+    "@types/puppeteer": "2.0.0",
+    "puppeteer": "2.0.0",
+    "eslint": "6.7.2",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-plugin-import": "2.18.2"
+  }
+}
