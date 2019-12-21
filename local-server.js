@@ -42,7 +42,7 @@ const serverWrapper = http.createServer(async (request, response) => {
     body: reqBody
   };
 
-  console.log('REQ', event.body);
+  console.log('REQUEST', reqBody);
 
   apiInstance.run(event, {})
     .then((res) => {

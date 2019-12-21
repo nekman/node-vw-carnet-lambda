@@ -1,23 +1,23 @@
 {
   "name": "node-vw-carnet-lambda",
   "version": "1.0.0",
-  "description": "",
+  "description": "node-vw-carnet on AWS Lambda",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "local": "node local",
-    "eslint": "eslint -c .eslintrc src/"
+    "start": "node -r esm local-server",
+    "eslint": "eslint -c .eslintrc src/",
+    "clean": "rm -rf node_modules/ && npm i --production"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "2.586.0",
+    "aws-sdk": "2.595.0",
     "chrome-aws-lambda": "2.0.1",
     "esm": "3.2.25",
     "lambda-api": "0.10.4",
     "node-vw-carnet": "0.0.3",
-    "puppeteer-core": "2.0.0",
     "uuid": "3.3.3"
   },
   "devDependencies": {

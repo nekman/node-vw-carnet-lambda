@@ -28,6 +28,7 @@ Resources:
   VWCarnetAPI: 
     Type: AWS::Serverless::Api
     Properties:
+      # Can't be "prod", but needs to be something...
       StageName: v1
       Cors:
         AllowMethods: "'OPTIONS,POST,GET'"
