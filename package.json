@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node -r esm local-server",
     "eslint": "eslint -c .eslintrc src/",
-    "clean": "rm -rf node_modules/ && npm i --production"
+    "clean": "rm -rf node_modules/ && npm i --production",
+    "cf:package": "./aws/package.sh $1",
+    "cf:deploy": "./aws/deploy.sh $1",
+    "cf:update": "npm run clean && npm run cf:package $1 && npm run cf:deploy $1"
   },
   "keywords": [],
   "author": "",
