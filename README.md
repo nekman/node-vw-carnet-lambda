@@ -1,4 +1,4 @@
-## node-vw-carnet-lambda
+# node-vw-carnet-lambda
 
 A Node.js AWS Lambda with a API Gateway REST API. Uses <a href="https://www.npmjs.com/package/lambda-api">Lambda API</a> as 
 application framework.
@@ -31,7 +31,32 @@ npm run build-all
 
 ## API
 
-#### Login
+Available routes:
+```
+╔══════════╤══════════════════════════╗
+║  METHOD  │  ROUTE                   ║
+╟──────────┼──────────────────────────╢
+║  GET     │  /                       ║
+╟──────────┼──────────────────────────╢
+║  POST    │  /login                  ║
+╟──────────┼──────────────────────────╢
+║  GET     │  /vehicle/emanager       ║
+╟──────────┼──────────────────────────╢
+║  GET     │  /vehicle/details        ║
+╟──────────┼──────────────────────────╢
+║  GET     │  /vehicle/info           ║
+╟──────────┼──────────────────────────╢
+║  GET     │  /vehicle/complete-info  ║
+╟──────────┼──────────────────────────╢
+║  POST    │  /climate/:state         ║
+╟──────────┼──────────────────────────╢
+║  POST    │  /window-heating/:state  ║
+╟──────────┼──────────────────────────╢
+║  POST    │  /action                 ║
+╚══════════╧══════════════════════════╝
+```
+
+### Login
 ```
 POST /login
 ```
@@ -74,7 +99,7 @@ with the Volkswagen CarNet (I think that it is valid for approximately 10 minute
 You can also "login" with a saved options object by posting it to the `/login` endpoint instead of username/password.
 
 
-#### Login with options
+### Login with options
 ```
 POST /login
 ```
@@ -101,8 +126,9 @@ If the options object is valid (known by Volkswagen CarNet), a new token is retu
 ### Start the climate heater
 
 The `token` can be used to call methods on the API.
+
 ```bash 
-POST /startclimate
+POST /climate/on
 
 headers: {
   token: 'token',
