@@ -91,10 +91,10 @@ HTTP 201
     }
 }
 ```
-The reponse contains one `token` and one `options` object. The `token` is be used to access the other methods in the API. 
+The response contains one `token` and one `options` object. The `token` is be used to access the other methods in the API. 
 
 The `options` object contains the "session" that is used to communicate
-with the Volkswagen CarNet (I think that it is valid for approximately 10 minutes). 
+with the Volkswagen CarNet (think it's valid for ~10 minutes). 
 
 You can also "login" with a saved options object by posting it to the `/login` endpoint instead of username/password.
 
