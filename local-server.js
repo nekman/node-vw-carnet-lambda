@@ -1,5 +1,5 @@
 import http from 'http';
-import { apiInstance } from './src/api-provider';
+import { apiInstance } from './src/util/api-provider';
 import './src/main';
 
 /**

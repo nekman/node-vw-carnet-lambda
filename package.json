@@ -4,10 +4,11 @@
   "description": "node-vw-carnet on AWS Lambda",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node -r esm local-server",
+    "test": "mocha --",
+    "start": "nodemon -r esm local-server",
     "eslint": "eslint -c .eslintrc src/",
     "clean": "rm -rf node_modules/ && npm i --production",
+    "build-all": "npm i && npm run eslint && npm test",
     "cf:package": "./aws/package.sh $1",
     "cf:deploy": "./aws/deploy.sh $1",
     "cf:update": "npm run clean && npm run cf:package $1 && npm run cf:deploy $1"
@@ -31,6 +32,11 @@
     "puppeteer": "2.0.0",
     "eslint": "6.7.2",
     "eslint-config-airbnb-base": "14.0.0",
-    "eslint-plugin-import": "2.18.2"
+    "eslint-plugin-import": "2.18.2",
+    "mocha": "6.2.2",
+    "nodemon": "2.0.1",
+    "nyc": "14.1.1",
+    "chai": "4.2.0",
+    "sinon": "7.5.0"
   }
 }

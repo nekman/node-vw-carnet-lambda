@@ -1,12 +1,12 @@
 import chromium from 'chrome-aws-lambda';
 import { CarnetLoginHandler } from 'node-vw-carnet';
-import { LoginError } from './errors';
+import { LoginError } from '../errors';
 
 /** @typedef {import('puppeteer').Browser} PuppeterBrowser */
 /** @typedef {import('puppeteer').Page} PuppeterPage */
 
 /**
- * @return {PuppeterBrowser}
+ * @return {Promise<PuppeterBrowser>}
  */
 export async function defaultBrowserProvider() {
   try {

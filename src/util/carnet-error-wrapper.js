@@ -1,4 +1,4 @@
-import { JsonError, CarnetLoginError } from './errors';
+import { JsonError, CarnetLoginError } from '../errors';
 
 /**
  * @param {() => Promise<any>} fn

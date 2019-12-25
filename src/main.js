@@ -1,5 +1,5 @@
 import CarnetRouter from './carnet-router';
-import { apiInstance } from './api-provider';
+import { apiInstance } from './util/api-provider';
 import { JsonError } from './errors';
 
 // Create routes

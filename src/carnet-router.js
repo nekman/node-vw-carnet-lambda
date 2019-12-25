@@ -1,11 +1,12 @@
-import { apiInstance } from './api-provider';
+import { apiInstance } from './util/api-provider';
 import LoginService from './login-service';
 import { LoginError, JsonError } from './errors';
-import { carnetClientErrorWrapper } from './carnet-error-wrapper';
+import { carnetClientErrorWrapper } from './util/carnet-error-wrapper';
 import checkToken from './middleware/check-token';
 
-/** @typedef {import('lambda-api').Request} Req */
-/** @typedef {import('lambda-api').Response} Res */
+/** @typedef {import('lambda-api').Request} LambdaAPIRequest */
+/** @typedef {import('lambda-api').Response} Response */
+/** @typedef {LambdaAPIRequest & { carnetClient?: import('node-vw-carnet').CarnetAPIClient }} Request */
 
 export default class CarnetRouter {
   /**
@@ -20,9 +21,10 @@ export default class CarnetRouter {
   /**
    * Login to Carnet.
    *
-   * @param {Req} req
+   * @param {Request} req
+   * @param {Response} res
    */
-  async login(req) {
+  async login(req, res) {
     const { email, password } = req.body;
     console.info('>> login()');
 
@@ -37,6 +39,8 @@ export default class CarnetRouter {
       }
 
       console.info('<< login() - successful login for carId = %s, token = %s', result.options.carId, result.token);
+
+      res.status(201).json(result);
       return result;
     } catch (e) {
       console.warn(`Could not login, message: ${e.message}`, e);
@@ -45,31 +49,71 @@ export default class CarnetRouter {
   }
 
   /**
-   * Starts the climate.
+   * Switch climate on/off.
    *
-   * @param {Req} req
+   * @param {Request} req
    */
-  async startClimate(req) {
+  async triggerClimate(req) {
     const { carnetClient } = req;
+    const { state } = req.params;
 
-    return carnetClientErrorWrapper(() => carnetClient.triggerClimatisation(true));
+    const on = state === 'on';
+
+    return carnetClientErrorWrapper(() => carnetClient.triggerClimatisation(on));
   }
 
   /**
-   * Get the vehicle status.
+   * Switch window heating on/off.
    *
-   * @param {Req} req
+   * @param {Request} req
    */
-  async fetchVehicleStatus(req) {
+  async triggerWindowHeating(req) {
+    const { carnetClient } = req;
+    const { state } = req.params;
+
+    const on = state === 'on';
+
+    return carnetClientErrorWrapper(() => carnetClient.triggerWindowheating(on));
+  }
+
+
+  /**
+   * Get the vehicle details.
+   *
+   * @param {Request} req
+   */
+  async getVehicleDetails(req) {
     const { carnetClient } = req;
 
     return carnetClientErrorWrapper(() => carnetClient.getVehicleDetails());
   }
 
   /**
+   * Get Emanager info.
+   *
+   * @param {Request} req
+   */
+  async getEmanager(req) {
+    const { carnetClient } = req;
+
+    return carnetClientErrorWrapper(() => carnetClient.getEmanager());
+  }
+
+  /**
+   * Get the fully loaded cars.
+   *
+   * @param {Request} req
+   */
+  async getFullyLoadedCars(req) {
+    const { carnetClient } = req;
+
+    return carnetClientErrorWrapper(() => carnetClient.loadCarDetails());
+  }
+
+  /**
    * Run any method on the Carnet API client.
    *
-   * @param {Req} req
+   * @param {Request} req
    */
   async runMethod(req) {
     const { carnetClient } = req;
@@ -94,15 +138,27 @@ export default class CarnetRouter {
     const router = new CarnetRouter();
 
     api.get('/', () => router.healthCheck());
-    api.post('/login', (req) => router.login(req));
+    api.post('/login', (req, res) => router.login(req, res));
 
-    api.get('/vehicle',
+    api.get('/vehicle/emanager',
       checkToken,
-      (req) => router.fetchVehicleStatus(req));
+      (req) => router.getEmanager(req));
 
-    api.post('/startclimate',
+    api.get('/vehicle/details',
       checkToken,
-      (req) => router.startClimate(req));
+      (req) => router.getVehicleDetails(req));
+
+    api.get('/vehicle/info',
+      checkToken,
+      (req) => router.getFullyLoadedCars(req));
+
+    api.post('/climate/:state',
+      checkToken,
+      (req) => router.triggerClimate(req));
+
+    api.post('/window-heating/:state',
+      checkToken,
+      (req) => router.triggerWindowHeating(req));
 
     api.post('/action',
       checkToken,

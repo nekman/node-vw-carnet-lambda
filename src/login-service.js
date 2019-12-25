@@ -1,14 +1,17 @@
 import { CarnetAPIClient } from 'node-vw-carnet';
 import { v4 } from 'uuid';
-import { defaultLoginHandlerProvider, defaultBrowserProvider } from './providers';
-import { carnetClientErrorWrapper } from './carnet-error-wrapper';
-import { Cache } from './memory-cache';
+import { defaultLoginHandlerProvider, defaultBrowserProvider } from './util/providers';
+import { carnetClientErrorWrapper } from './util/carnet-error-wrapper';
+import { Cache } from './util/memory-cache';
 import { TokenNotFoundError, LoginError } from './errors';
+
+/** @typedef {import('node-vw-carnet').CarnetLoginHandler} LoginHandler */
+/** @typedef {import('puppeteer').Page} PuppeterPage */
 
 export default class LoginService {
 
   /**
-   * @param {(page: PuppeterPage) => CarnetLoginHandler} loginHandlerProvider
+   * @param {(page: PuppeterPage) => LoginHandler} loginHandlerProvider
    * @param {() => Promise<import('puppeteer').Browser>?} browserProvider
    */
   constructor(loginHandlerProvider = defaultLoginHandlerProvider, browserProvider = defaultBrowserProvider) {
@@ -41,8 +44,8 @@ export default class LoginService {
 
 
   /**
-   *
    * Login with Carnet username/password.
+   *
    * @param {string} email
    * @param {string} password
    */
@@ -63,13 +66,19 @@ export default class LoginService {
 
     const client = new CarnetAPIClient(options);
 
-    // Verify that the options is valid by sending a request
+    // Verify that the options is valid by sending a request.
+    // TODO: Check is this is the best way to verify that a Carnet session is valid.
     await carnetClientErrorWrapper(() => client.getLocation());
 
+    console.info('<< createTokenWithOptions()');
     return this.createToken(options);
   }
 
 
+  /**
+   * @private
+   * @param {string} token
+   */
   getCarnetClientByToken(token) {
     console.log('>> getCarnetClientByToken()');
 
