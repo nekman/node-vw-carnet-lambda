@@ -10,14 +10,16 @@ import { LoginError } from '../errors';
  */
 export async function defaultBrowserProvider() {
   try {
-    return await chromium.puppeteer.launch({
+    const options = {
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath,
       // Avoid ERR_CERT_AUTHORITY_INVALID errors
       ignoreHTTPSErrors: true,
       headless: true
-    });
+    };
+
+    return await chromium.puppeteer.launch(options);
   } catch (e) {
     console.error('ERROR: could not create browser', e);
     throw new LoginError('Could not create chromium browser!');
