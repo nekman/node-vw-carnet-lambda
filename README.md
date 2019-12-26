@@ -46,8 +46,6 @@ Available routes:
 ╟──────────┼──────────────────────────╢
 ║  GET     │  /vehicle/info           ║
 ╟──────────┼──────────────────────────╢
-║  GET     │  /vehicle/complete-info  ║
-╟──────────┼──────────────────────────╢
 ║  POST    │  /climate/:state         ║
 ╟──────────┼──────────────────────────╢
 ║  POST    │  /window-heating/:state  ║
