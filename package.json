@@ -17,7 +17,7 @@
   "author": "nekman",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "2.596.0",
+    "aws-sdk": "2.814.0",
     "chrome-aws-lambda": "2.0.1",
     "esm": "3.2.25",
     "lambda-api": "0.10.4",
